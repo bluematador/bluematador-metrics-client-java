@@ -39,64 +39,56 @@ public class BlueMatadorClient extends Sanitizer {
         .build();
     }
 
-    public void count(String name, double value, double sampleRate, String[] tags) throws Exception {
+    private void bluematadorCount(String name, long value, double sampleRate, String[] tags) throws Exception {
         if(this.sanitize(name, tags)) {
             this.client.count(name, value, sampleRate, tags);
         }
     }
 
-    public void count(String name) throws Exception {
-        if(this.sanitize(name, new String[]{""})) {
-            this.client.increment(name);
-        }  
-    }
-
-    public void count(String name, double value) throws Exception {
-        if(this.sanitize(name, new String[]{""})) {
-            this.client.count(name, value, 1, new String[]{""});
-        }
-    }
-
-    public void count(String name, double value, double sampleRate) throws Exception {
-        if(this.sanitize(name, new String[]{""})) {
-            this.client.count(name, value, sampleRate, new String[]{""});
-        }
-    }
-
-    public void count(String name, String[] tags) throws Exception {
-        if(this.sanitize(name, tags)) {
-            this.client.count(name, 1, 1, tags);
-        }
-    }
-
-    public void count(String name, double value, String[] tags) throws Exception {
-        if(this.sanitize(name, tags)) {
-            this.client.count(name, value, 1, tags);
-        }
-    }
-
-    public void gauge(String name, double value, double sampleRate, String[] tags) throws Exception {
+    private void bluematadorGauge(String name, long value, double sampleRate, String[] tags) throws Exception {
         if(this.sanitize(name, tags)) {
             this.client.recordGaugeValue(name, value, sampleRate, tags);
         }
     }
 
-    public void gauge(String name, double value) throws Exception {
-        if(this.sanitize(name, new String[]{""})) {
-            this.client.recordGaugeValue(name, value, 1, new String[]{""});   
-        }
+    public void count(String name, long value, double sampleRate, String[] tags) throws Exception {
+        this.bluematadorCount(name, value, sampleRate, tags);
     }
 
-    public void gauge(String name, double value, double sampleRate) throws Exception {
-        if(this.sanitize(name, new String[]{""})) {
-            this.client.recordGaugeValue(name, value, sampleRate, new String[]{""});
-        }
+    public void count(String name) throws Exception {
+        this.bluematadorCount(name, 1, 1, new String[]{""});
     }
 
-    public void gauge(String name, double value, String[] tags) throws Exception {
-        if(this.sanitize(name, tags)) {
-            this.client.recordGaugeValue(name, value, 1, tags);
-        }
+    public void count(String name, long value) throws Exception {
+        this.bluematadorCount(name, value, 1, new String[]{""});
+    }
+
+    public void count(String name, long value, double sampleRate) throws Exception {
+        this.bluematadorCount(name, value, sampleRate, new String[]{""});
+    }
+
+    public void count(String name, String[] tags) throws Exception {
+        this.bluematadorCount(name, 1, 1, tags);
+    }
+
+    public void count(String name, long value, String[] tags) throws Exception {
+        this.bluematadorCount(name, value, 1, tags);
+    }
+
+    public void gauge(String name, long value, double sampleRate, String[] tags) throws Exception {
+        this.bluematadorGauge(name, value, sampleRate, tags);
+    }
+
+    public void gauge(String name, long value) throws Exception {
+        this.bluematadorGauge(name, value, 1, new String[]{""});   
+    }
+
+    public void gauge(String name, long value, double sampleRate) throws Exception {
+        this.bluematadorGauge(name, value, sampleRate, new String[]{""});
+    }
+
+    public void gauge(String name, long value, String[] tags) throws Exception {
+        this.bluematadorGauge(name, value, 1, tags);
     }
 
     public void close() throws Exception {
