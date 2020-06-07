@@ -1,5 +1,5 @@
 package com.bluematador.app;
-import  com.bluematador.app.BlueMatadorClient;
+import  com.bluematador.app.BlueMatadorClientBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,7 +12,9 @@ public class Client {
 
     public static void main(String[] args) throws Exception {
 
-        var bluematador = new BlueMatadorClient();
+        var bluematador = new BlueMatadorClientBuilder()
+            .withPrefix("app")
+            .build();
 
         try {
             bluematador.count("counter.1");
