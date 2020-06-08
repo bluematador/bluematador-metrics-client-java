@@ -12,14 +12,14 @@ public class BlueMatadorClient extends Sanitizer {
     private void prepareCount(String name, double value, double sampleRate, String[] tags) throws Exception {
         if(this.sanitize(name, tags)) {
             tags = this.formatTags(tags);
-            this.exporter.count(name, value, Math.max(0, Math.min(1.0, sampleRate)), tags);
+            this.exporter.count(name, value / Math.max(0, Math.min(1.0, sampleRate)), Math.max(0, Math.min(1.0, sampleRate)), tags);
         }
     }
 
     private void prepareGauge(String name, double value, double sampleRate, String[] tags) throws Exception {
         if(this.sanitize(name, tags)) {
             tags = this.formatTags(tags);
-            this.exporter.recordGaugeValue(name, value, Math.max(0, Math.min(1.0, sampleRate)), tags);
+            this.exporter.recordGaugeValue(name, value / Math.max(0, Math.min(1.0, sampleRate)), Math.max(0, Math.min(1.0, sampleRate)), tags);
         }
     }
 
