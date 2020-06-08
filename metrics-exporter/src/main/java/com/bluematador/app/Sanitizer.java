@@ -31,13 +31,16 @@ public class Sanitizer {
             if(tags[i].contains("|")) {
                 throw new Exception("Illegal character | found in metric tags");
             }
-            if(tags[i].contains(",")) {
-                throw new Exception("Illegal character , found in metric tags");
-            }
             if(tags[i].contains("@")) {
                 throw new Exception("Illegal character @ found in metric tags");
             }
         }
         return true;
     }
+
+    // private boolean checkSampleRate(double sampleRate) throws Exception {
+    //     if(Math.max(0, Math.min(1.0, sampleRate))) {
+
+    //     }
+    // }
 }

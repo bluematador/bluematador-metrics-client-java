@@ -13,6 +13,8 @@ public class Client {
     public static void main(String[] args) throws Exception {
 
         var bluematador = new BlueMatadorClientBuilder()
+            .withHost("localhost")
+            .withPort(8767)
             .withPrefix("app")
             .build();
 
@@ -27,17 +29,17 @@ public class Client {
             logger.error(e);
         }
         try {
-            bluematador.count("counter.3", 2, 1);
+            bluematador.count("counter.3", 2, .5);
         } catch(Exception e) {
             logger.error(e);
         }
         try {
-            bluematador.count("counter.4", 1, new String[]{"Env:dev", "account:122321"});
+            bluematador.count("counter.4", 1, new String[]{"Env:dev", "account:122321", "tag3:hello", "tag4:yoyo", "tag5:jojo"});
         } catch(Exception e) {
             logger.error(e);
         }
         try {
-            bluematador.count("counter.5", 1, 1, new String[]{"Env:dev", "account:122321"});
+            bluematador.count("counter.5", 1, 2, new String[]{"Env:dev", "account:122321"});
         } catch(Exception e) {
             logger.error(e);
         }
