@@ -1,26 +1,35 @@
 package com.bluematador.app;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.timgroup.statsd.NonBlockingStatsDClient;
+import com.bluematador.app.StatsExporter;
 import com.bluematador.app.Sanitizer;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class BlueMatadorClient extends Sanitizer {
     private static final Logger logger = LogManager.getLogger(BlueMatadorClient.class);
-    public NonBlockingStatsDClient exporter;
+    public StatsExporter exporter;
 
-    private void prepareCount(String name, double value, double sampleRate, String[] tags) throws Exception {
+    private void prepareCount(String name, long value, double sampleRate, String[] tags) throws Exception {
         if(this.sanitize(name, tags)) {
             tags = this.formatTags(tags);
-            this.exporter.count(name, value / Math.max(0, Math.min(1.0, sampleRate)), Math.max(0, Math.min(1.0, sampleRate)), tags);
+            if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
+                exporter.count(name, value / Math.max(0, Math.min(1.0, sampleRate)), tags);
+            }
         }
     }
 
-    private void prepareGauge(String name, double value, double sampleRate, String[] tags) throws Exception {
+    private void prepareGauge(String name, long value, double sampleRate, String[] tags) throws Exception {
         if(this.sanitize(name, tags)) {
             tags = this.formatTags(tags);
-            this.exporter.recordGaugeValue(name, value, Math.max(0, Math.min(1.0, sampleRate)), tags);
+            if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
+                exporter.recordGaugeValue(name, value, tags);
+            }
         }
+    }
+
+    private boolean isInvalidSample(double sampleRate) {
+        return sampleRate != 1 && ThreadLocalRandom.current().nextDouble() > sampleRate;
     }
 
     private String[] formatTags(String[] tags) {
@@ -36,7 +45,7 @@ public class BlueMatadorClient extends Sanitizer {
         return formattedTags;
     }
 
-    public void count(String name, double value, double sampleRate, String[] tags) throws Exception {
+    public void count(String name, long value, double sampleRate, String[] tags) throws Exception {
         this.prepareCount(name, value, sampleRate, tags);
     }
 
@@ -44,11 +53,11 @@ public class BlueMatadorClient extends Sanitizer {
         this.prepareCount(name, 1, 1, new String[]{""});
     }
 
-    public void count(String name, double value) throws Exception {
+    public void count(String name, long value) throws Exception {
         this.prepareCount(name, value, 1, new String[]{""});
     }
 
-    public void count(String name, double value, double sampleRate) throws Exception {
+    public void count(String name, long value, double sampleRate) throws Exception {
         this.prepareCount(name, value, sampleRate, new String[]{""});
     }
 
@@ -56,28 +65,28 @@ public class BlueMatadorClient extends Sanitizer {
         this.prepareCount(name, 1, 1, tags);
     }
 
-    public void count(String name, double value, String[] tags) throws Exception {
+    public void count(String name, long value, String[] tags) throws Exception {
         this.prepareCount(name, value, 1, tags);
     }
 
-    public void gauge(String name, double value, double sampleRate, String[] tags) throws Exception {
+    public void gauge(String name, long value, double sampleRate, String[] tags) throws Exception {
         this.prepareGauge(name, value, sampleRate, tags);
     }
 
-    public void gauge(String name, double value) throws Exception {
+    public void gauge(String name, long value) throws Exception {
         this.prepareGauge(name, value, 1, new String[]{""});   
     }
 
-    public void gauge(String name, double value, double sampleRate) throws Exception {
+    public void gauge(String name, long value, double sampleRate) throws Exception {
         this.prepareGauge(name, value, sampleRate, new String[]{""});
     }
 
-    public void gauge(String name, double value, String[] tags) throws Exception {
+    public void gauge(String name, long value, String[] tags) throws Exception {
         this.prepareGauge(name, value, 1, tags);
     }
 
     public void close() throws Exception {
-        this.exporter.close();
+        exporter.close();
     }
 
 }

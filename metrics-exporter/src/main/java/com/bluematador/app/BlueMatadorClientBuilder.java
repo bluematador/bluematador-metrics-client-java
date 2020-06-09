@@ -1,13 +1,11 @@
 package com.bluematador.app;
 import com.bluematador.app.BlueMatadorClient;
+import com.bluematador.app.StatsExporter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.timgroup.statsd.NonBlockingStatsDClientBuilder;
-import com.timgroup.statsd.NonBlockingStatsDClient;
-import com.timgroup.statsd.StatsDClient;
 
 public class BlueMatadorClientBuilder {
-    private NonBlockingStatsDClient exporter;
+    private StatsExporter exporter;
     private String host;
     private int port;
     private String prefix;
@@ -33,13 +31,9 @@ public class BlueMatadorClientBuilder {
         return this;
     }
 
-    public BlueMatadorClient build() {
-       this.exporter = new NonBlockingStatsDClientBuilder()
-        .hostname(this.host)
-        .port(this.port)
-        .prefix(this.prefix)
-        .enableTelemetry(false)
-        .build();
+    public BlueMatadorClient build() throws Exception {
+        this.exporter = new StatsExporter(this.host, this.port, this.prefix);
+        
 
         BlueMatadorClient client = new BlueMatadorClient();
         client.exporter = this.exporter;
