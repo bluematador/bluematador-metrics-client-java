@@ -12,7 +12,7 @@ public class BlueMatadorClient extends Sanitizer {
 
     private void prepareCount(String name, long value, double sampleRate, String[] tags) throws Exception {
         if(this.sanitize(name, tags)) {
-            tags = this.formatTags(tags);
+            // tags = this.formatTags(tags);
             if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
                 exporter.count(name, value / Math.max(0, Math.min(1.0, sampleRate)), tags);
             }
@@ -21,7 +21,7 @@ public class BlueMatadorClient extends Sanitizer {
 
     private void prepareGauge(String name, long value, double sampleRate, String[] tags) throws Exception {
         if(this.sanitize(name, tags)) {
-            tags = this.formatTags(tags);
+            // tags = this.formatTags(tags);
             if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
                 exporter.recordGaugeValue(name, value, tags);
             }

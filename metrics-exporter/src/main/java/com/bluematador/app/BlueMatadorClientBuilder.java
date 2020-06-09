@@ -5,15 +5,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class BlueMatadorClientBuilder {
+    private static final Logger logger = LogManager.getLogger(BlueMatadorClientBuilder.class);
+
     private StatsExporter exporter;
     private String host;
     private int port;
     private String prefix;
 
     public BlueMatadorClientBuilder() {
-        this.host = "Localhost";
-        this.port = 8767;
+        this.host = System.getenv("BLUEMATADOR_AGENT_HOST") != null ? System.getenv("BLUEMATADOR_AGENT_HOST") : "127.0.0.1";
+        this.port = System.getenv("BLUEMATADOR_AGENT_PORT") != null ? Integer.parseInt(System.getenv("BLUEMATADOR_AGENT_PORT")) : 8767;
         this.prefix = null;
+
+        logger.info(this.host);
+        logger.info(this.port);
     }
 
     public BlueMatadorClientBuilder withHost(String host) {
