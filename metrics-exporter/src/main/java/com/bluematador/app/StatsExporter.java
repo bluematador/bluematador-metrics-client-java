@@ -1,4 +1,4 @@
-package com.bluematador.app;
+package com.timgroup.statsd;
 import com.timgroup.statsd.NonBlockingStatsDClientBuilder;
 import com.timgroup.statsd.NonBlockingStatsDClient;
 
@@ -13,13 +13,10 @@ public class StatsExporter extends NonBlockingStatsDClient {
         if ((tags == null) || (tags.length == 0)) {
             return builder;
         }
-        builder.append("|#");
+        builder.append("|#" + tags[0]);
 
-        for (int n = tags.length - 1; n >= 0; n--) {
-            builder.append(tags[n]);
-            if (n > 0) {
-                builder.append('#');
-            }
+        for (int n = 1; n < tags.length; n++) {
+            builder.append('#' + tags[n]);
         }
         return builder;
     }

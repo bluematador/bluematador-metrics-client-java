@@ -1,7 +1,7 @@
 package com.bluematador.app;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.bluematador.app.StatsExporter;
+import com.timgroup.statsd.StatsExporter;
 import com.bluematador.app.Sanitizer;
 import java.util.concurrent.ThreadLocalRandom;
 
