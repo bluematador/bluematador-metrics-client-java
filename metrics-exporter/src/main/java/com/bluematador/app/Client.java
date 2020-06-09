@@ -54,7 +54,7 @@ public class Client {
             logger.error(e);
         }
         try {
-            bluematador.gauge("gauge.3", 23, 1, new String[]{"Env:dev", "account:122321"});
+            bluematador.gauge("gauge.3", 23, .1, new String[]{"Env:dev", "account:122321"});
         } catch(Exception e) {
             logger.error(e);
         }

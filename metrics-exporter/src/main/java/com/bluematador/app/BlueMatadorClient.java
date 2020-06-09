@@ -1,18 +1,14 @@
 package com.bluematador.app;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import com.timgroup.statsd.StatsExporter;
 import com.bluematador.app.Sanitizer;
 import java.util.concurrent.ThreadLocalRandom;
 
 
 public class BlueMatadorClient extends Sanitizer {
-    private static final Logger logger = LogManager.getLogger(BlueMatadorClient.class);
     public StatsExporter exporter;
 
     private void prepareCount(String name, long value, double sampleRate, String[] tags) throws Exception {
         if(this.sanitize(name, tags)) {
-            // tags = this.formatTags(tags);
             if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
                 exporter.count(name, value / Math.max(0, Math.min(1.0, sampleRate)), tags);
             }
@@ -21,7 +17,6 @@ public class BlueMatadorClient extends Sanitizer {
 
     private void prepareGauge(String name, long value, double sampleRate, String[] tags) throws Exception {
         if(this.sanitize(name, tags)) {
-            // tags = this.formatTags(tags);
             if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
                 exporter.recordGaugeValue(name, value, tags);
             }
@@ -30,19 +25,6 @@ public class BlueMatadorClient extends Sanitizer {
 
     private boolean isInvalidSample(double sampleRate) {
         return sampleRate != 1 && ThreadLocalRandom.current().nextDouble() > sampleRate;
-    }
-
-    private String[] formatTags(String[] tags) {
-        String[] formattedTags = new String[1];
-        for(int i = 0; i < tags.length; i++) {
-            if(i != 0) {
-                formattedTags[0] = formattedTags[0] + "#" + tags[i];
-            } else {
-                formattedTags[0] = tags[i];
-            } 
-        }
-        logger.info(formattedTags[0]);
-        return formattedTags;
     }
 
     public void count(String name, long value, double sampleRate, String[] tags) throws Exception {

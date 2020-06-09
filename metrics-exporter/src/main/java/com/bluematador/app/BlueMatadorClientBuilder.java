@@ -1,12 +1,8 @@
 package com.bluematador.app;
 import com.bluematador.app.BlueMatadorClient;
 import com.timgroup.statsd.StatsExporter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class BlueMatadorClientBuilder {
-    private static final Logger logger = LogManager.getLogger(BlueMatadorClientBuilder.class);
-
     private StatsExporter exporter;
     private String host;
     private int port;

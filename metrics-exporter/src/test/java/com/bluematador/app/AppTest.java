@@ -1,6 +1,4 @@
 package com.bluematador.app;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -13,7 +11,6 @@ import static junit.framework.Assert.assertTrue;
 public class AppTest 
     extends TestCase
 {
-    private static final Logger logger = LogManager.getLogger(AppTest.class);
     private BlueMatadorClient bluematador = new BlueMatadorClient();
 
     public void testIllegalMetricName() {
