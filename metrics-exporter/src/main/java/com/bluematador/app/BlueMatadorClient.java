@@ -3,10 +3,30 @@ import com.timgroup.statsd.StatsExporter;
 import com.bluematador.app.Sanitizer;
 import java.util.concurrent.ThreadLocalRandom;
 
-
+/**
+ * The BlueMatadorClient class allows you to send custom gauge and count metrics
+ * to your Blue Matador dashboard
+ */
 public class BlueMatadorClient extends Sanitizer {
+    /**
+     * exporter is an instance of the StatsExporter which extends the DataDog StatsDClient
+     * The custom metrics are formatted and then sent to the Blue Matador agent through 
+     * this class.
+     */
     public StatsExporter exporter;
-
+    
+    /**
+     * prepareCount sanitizes your metrics checking for illegal characters within the string parameters
+     * it then determines whether to send your metric based on the given sample rate.
+     * 
+     * @param name The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
+     * @param value  The amount to increment the metric by, the default is 1.
+     * @param sampleRate sends only a sample of data e.g. 0.5 indicates 50% of data being sent. Default value is 1
+     * @param tags adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
+     * formatted with a colon separator e.g. ['account:12345', 'env:development']. Cannot contain '#' or '|'
+     *  
+     * @return void 
+     */
     private void prepareCount(String name, long value, double sampleRate, String[] tags) throws Exception {
         if(this.sanitize(name, tags)) {
             if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
@@ -15,6 +35,18 @@ public class BlueMatadorClient extends Sanitizer {
         }
     }
 
+     /**
+     * prepareGauge sanitizes your metrics checking for illegal characters within the string parameters
+     * it then determines whether to send your metric based on the given sample rate.
+     * 
+     * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
+     * @param value      The latest value to set for the metric
+     * @param sampleRate sends only a sample of data e.g. 0.5 indicates 50% of data being sent. Default value is 1
+     * @param tags       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
+     * formatted with a colon separator e.g. ['account:12345', 'env:development']. Cannot contain '#' or '|'
+     *  
+     * @return void 
+     */
     private void prepareGauge(String name, long value, double sampleRate, String[] tags) throws Exception {
         if(this.sanitize(name, tags)) {
             if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
@@ -22,11 +54,30 @@ public class BlueMatadorClient extends Sanitizer {
             }
         }
     }
-
+    
+    /**
+     * checks whether the given sampleRate is not equal to one and is less than the randomly generated number between
+     * 0 and 1. If the sample rate is equal to 1 or greater than the random number the metric is sent
+     * 
+     * @param sampleRate the double to sample your data by. Must be a number between 0 and 1
+     * 
+     * @return           returns a boolean. False indicates to send the metric to the calling function
+     */
     private boolean isInvalidSample(double sampleRate) {
         return sampleRate != 1 && ThreadLocalRandom.current().nextDouble() > sampleRate;
     }
 
+    /**
+     * sends a custom counter metric
+     * 
+     * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
+     * @param value      The amount to increment the metric by, the default is 1.
+     * @param sampleRate sends only a sample of data e.g. 0.5 indicates 50% of data being sent. Default value is 1
+     * @param tags       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
+     * formatted with a colon separator e.g. ['account:12345', 'env:development']. Cannot contain '#' or '|'
+     * 
+     * @return void 
+     */
     public void count(String name, long value, double sampleRate, String[] tags) throws Exception {
         this.prepareCount(name, value, sampleRate, tags);
     }
@@ -35,38 +86,134 @@ public class BlueMatadorClient extends Sanitizer {
         this.prepareCount(name, 1, 1, new String[]{""});
     }
 
+    /**
+     * sends a custom counter metric
+     * 
+     * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
+     * @param value      The amount to increment the metric by, the default is 1.
+     * 
+     * sampleRate is set to 1
+     * tags are set to an empty array
+     * 
+     * @return void 
+     */
     public void count(String name, long value) throws Exception {
         this.prepareCount(name, value, 1, new String[]{""});
     }
 
+    /**
+     * sends a custom counter metric
+     * 
+     * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
+     * @param value      The amount to increment the metric by, the default is 1.
+     * @param sampleRate sends only a sample of data e.g. 0.5 indicates 50% of data being sent. Default value is 1
+     * 
+     * tags are set to an empty array
+     * 
+     * @return void 
+     */
     public void count(String name, long value, double sampleRate) throws Exception {
         this.prepareCount(name, value, sampleRate, new String[]{""});
     }
 
+       /**
+     * sends a custom counter metric
+     * 
+     * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
+     * @param tags       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
+     * formatted with a colon separator e.g. ['account:12345', 'env:development']. Cannot contain '#' or '|'
+     * 
+     * value is set to 1
+     * sampleRate is set to 1
+     * 
+     * @return void 
+     */
     public void count(String name, String[] tags) throws Exception {
         this.prepareCount(name, 1, 1, tags);
     }
 
+       /**
+     * sends a custom counter metric
+     * 
+     * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
+     * @param value      The amount to increment the metric by, the default is 1.
+     * @param tags       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
+     * formatted with a colon separator e.g. ['account:12345', 'env:development']. Cannot contain '#' or '|'
+     * 
+     * sampleRate is set to 1
+     * 
+     * @return void 
+     */
     public void count(String name, long value, String[] tags) throws Exception {
         this.prepareCount(name, value, 1, tags);
     }
 
+    /**
+     * sends a custom gauge metric
+     * 
+     * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
+     * @param value      The latest value to set for the metric
+     * @param sampleRate sends only a sample of data e.g. 0.5 indicates 50% of data being sent. Default value is 1
+     * @param tags       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
+     * formatted with a colon separator e.g. ['account:12345', 'env:development']. Cannot contain '#' or '|'
+     *  
+     * @return void 
+     */
     public void gauge(String name, long value, double sampleRate, String[] tags) throws Exception {
         this.prepareGauge(name, value, sampleRate, tags);
     }
 
+     /**
+     * sends a custom gauge metric
+     * 
+     * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
+     * @param value      The latest value to set for the metric
+     * 
+     * sampleRate is set to 1
+     * tags are set to an empty array
+     *  
+     * @return void 
+     */
     public void gauge(String name, long value) throws Exception {
         this.prepareGauge(name, value, 1, new String[]{""});   
     }
 
+     /**
+     * sends a custom gauge metric
+     * 
+     * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
+     * @param value      The latest value to set for the metric
+     * @param sampleRate sends only a sample of data e.g. 0.5 indicates 50% of data being sent. Default value is 1
+     * 
+     * tags are set to an empty array
+     *  
+     * @return void 
+     */
     public void gauge(String name, long value, double sampleRate) throws Exception {
         this.prepareGauge(name, value, sampleRate, new String[]{""});
     }
 
+     /**
+     * sends a custom gauge metric
+     * 
+     * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
+     * @param value      The latest value to set for the metric
+     * @param tags       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
+     * formatted with a colon separator e.g. ['account:12345', 'env:development']. Cannot contain '#' or '|'
+     *  
+     * sampleRate is set to 1
+     * 
+     * @return void 
+     */
     public void gauge(String name, long value, String[] tags) throws Exception {
         this.prepareGauge(name, value, 1, tags);
     }
 
+    /**
+     * closes the UDP connection of the client
+     * 
+     * @return void
+     */
     public void close() throws Exception {
         exporter.close();
     }
