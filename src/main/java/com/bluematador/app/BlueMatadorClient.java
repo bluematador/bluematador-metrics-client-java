@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * The BlueMatadorClient class allows you to send custom gauge and count metrics
  * to your Blue Matador dashboard
  */
-public class BlueMatadorClient extends Sanitizer {
+public class BlueMatadorClient {
     /**
      * client is an instance of the BlueMatadorNonBlockingStatsDClient which extends the DataDog StatsDClient
      * The custom metrics are formatted and then sent to the Blue Matador agent through 
@@ -17,6 +17,40 @@ public class BlueMatadorClient extends Sanitizer {
 
     public BlueMatadorClient(BlueMatadorNonBlockingStatsDClient client) {
         this.client = client;
+    }
+
+
+    /**
+     * sanitizes a string by replacing illegal characters : and | with _
+     * 
+     * @param string the string to sanitize
+     * 
+     * @return the sanitized string
+     */
+    private String sanitize(String string) {
+        var String sanitizedString = string;
+        if(sanitizedString.contains(":")) {
+            sanitizedString = sanitizedString.replace(":", "_");
+        } 
+        if(sanitizedString.contains("|")) {
+            sanitizedString = sanitizedString.replace("|", "_");
+        }
+        return sanitizedString;
+    }
+
+    /**
+     * sends each tag to the sanitize function to replace illegal characters : and | with _
+     * 
+     * @param tags the array of tags to sanitize
+     * 
+     * @return the array of sanitized tags
+     */
+    private String[] sanitizeTags(String[] tags) {
+        String[] sanitizedTags = new String[tags.length];
+        for(int i = 0; i < tags.length; i++) {
+            sanitizedTags[i] = this.sanitize(tags[i]);
+        }
+        return sanitizedTags;
     }
     
     /**
@@ -32,11 +66,11 @@ public class BlueMatadorClient extends Sanitizer {
      * @return void 
      */
     private void _count(String name, double value, double sampleRate, String[] tags) throws Exception {
-        if(this.sanitize(name, tags)) {
+        var metricName = this.sanitize(name);
+        var metricTags = this.sanitizeTags(tags);
             if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
-                client.count(name, value / Math.max(0, Math.min(1.0, sampleRate)), tags);
+                client.count(metricName, value / Math.max(0, Math.min(1.0, sampleRate)), metricTags);
             }
-        }
     }
 
      /**
@@ -52,11 +86,11 @@ public class BlueMatadorClient extends Sanitizer {
      * @return void 
      */
     private void _gauge(String name, double value, double sampleRate, String[] tags) throws Exception {
-        if(this.sanitize(name, tags)) {
+        var metricName = this.sanitize(name);
+        var metricTags = this.sanitizeTags(tags);
             if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
-                client.recordGaugeValue(name, value, tags);
+                client.recordGaugeValue(metricName, value, metricTags);
             }
-        }
     }
     
     /**
