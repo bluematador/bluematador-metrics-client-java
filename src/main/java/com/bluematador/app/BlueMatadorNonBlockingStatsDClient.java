@@ -1,6 +1,7 @@
 package com.timgroup.statsd;
 
-
+import java.net.SocketAddress;
+import java.util.concurrent.Callable;
 /**
  * BlueMatadorNonBlockingStatsDClient extends Datadogs NonBlockingStatsdClient
  * to allow custom functionality
@@ -8,7 +9,7 @@ package com.timgroup.statsd;
 public class BlueMatadorNonBlockingStatsDClient extends NonBlockingStatsDClient {
 
     // need to find the right return type here
-    private NonBlockingStatsDClient.staticAddressResolution clientAddress() {
+    private static Callable<SocketAddress> clientAddress(String host, int port) throws Exception {
         return NonBlockingStatsDClientBuilder.staticAddressResolution(host, port);
     }
 
@@ -21,7 +22,7 @@ public class BlueMatadorNonBlockingStatsDClient extends NonBlockingStatsDClient 
      * 
      */
     public BlueMatadorNonBlockingStatsDClient(String host, int port, String prefix) throws Exception {
-        super(prefix, 4096, null, null, this.clientAddress, this.clientAddress, 100, 1096, 1400, null, 512, 1, 1, false, false, 0);
+        super(prefix, 4096, null, null, clientAddress(host, port), clientAddress(host, port), 100, 1096, 1400, null, 512, 1, 1, false, false, 0);
     }
     
     /**

@@ -36,8 +36,7 @@ public class BlueMatadorClientBuilder {
      */
     public BlueMatadorClientBuilder() {
         this.host = System.getenv("BLUEMATADOR_AGENT_HOST") != null ? System.getenv("BLUEMATADOR_AGENT_HOST") : "127.0.0.1";
-        // this && evaluation needs to check that it is a positive integer 
-        this.port = System.getenv("BLUEMATADOR_AGENT_PORT") != null && System.getenv("BLUEMATADOR_AGENT_PORT") > 0 ? Integer.parseInt(System.getenv("BLUEMATADOR_AGENT_PORT")) : 8767;
+        this.port = System.getenv("BLUEMATADOR_AGENT_PORT") != null && Integer.signum(Integer.parseInt(System.getenv("BLUEMATADOR_AGENT_PORT"))) == 1 ? Integer.parseInt(System.getenv("BLUEMATADOR_AGENT_PORT")) : 8767;
         this.prefix = null;
     }
 

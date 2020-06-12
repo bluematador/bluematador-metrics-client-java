@@ -16,7 +16,7 @@ public class BlueMatadorClient extends Sanitizer {
     private BlueMatadorNonBlockingStatsDClient client;
 
     public BlueMatadorClient(BlueMatadorNonBlockingStatsDClient client) {
-        this.client = client
+        this.client = client;
     }
     
     /**
@@ -31,7 +31,7 @@ public class BlueMatadorClient extends Sanitizer {
      *  
      * @return void 
      */
-    private void _count(String name, long value, double sampleRate, String[] tags) throws Exception {
+    private void _count(String name, double value, double sampleRate, String[] tags) throws Exception {
         if(this.sanitize(name, tags)) {
             if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
                 client.count(name, value / Math.max(0, Math.min(1.0, sampleRate)), tags);
@@ -51,7 +51,7 @@ public class BlueMatadorClient extends Sanitizer {
      *  
      * @return void 
      */
-    private void _gauge(String name, long value, double sampleRate, String[] tags) throws Exception {
+    private void _gauge(String name, double value, double sampleRate, String[] tags) throws Exception {
         if(this.sanitize(name, tags)) {
             if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
                 client.recordGaugeValue(name, value, tags);
@@ -71,6 +71,10 @@ public class BlueMatadorClient extends Sanitizer {
         return sampleRate != 1 && ThreadLocalRandom.current().nextDouble() > sampleRate;
     }
 
+    // private double toDouble(long num) {
+
+    // }
+
     /**
      * sends a custom counter metric
      * 
@@ -83,7 +87,7 @@ public class BlueMatadorClient extends Sanitizer {
      * @return void 
      */
     public void count(String name, long value, double sampleRate, String[] tags) throws Exception {
-        this._count(name, value, sampleRate, tags);
+        this._count(name, (double)value, sampleRate, tags);
     }
 
     public void count(String name, double value, double sampleRate, String[] tags) throws Exception {

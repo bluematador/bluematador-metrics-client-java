@@ -1,8 +1,9 @@
 package com.bluematador;
 
-import  com.bluematador.BlueMatadorClientBuilder;
-import org.apache.logging.log4j.LogManager;
+import com.bluematador.BlueMatadorClientBuilder;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 
 
 // This file is soley used to test sending custom metrics to the Agent.
