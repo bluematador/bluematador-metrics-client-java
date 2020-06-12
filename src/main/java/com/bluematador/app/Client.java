@@ -1,5 +1,6 @@
-package com.bluematador.app;
-import  com.bluematador.app.BlueMatadorClientBuilder;
+package com.bluematador;
+
+import  com.bluematador.BlueMatadorClientBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

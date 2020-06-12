@@ -1,17 +1,18 @@
-package com.bluematador.app;
-import com.bluematador.app.BlueMatadorClient;
-import com.timgroup.statsd.StatsExporter;
+package com.bluematador;
+
+import com.timgroup.statsd.BlueMatadorNonBlockingStatsDClient;
 
 /**
  * The BlueMatadorClientBuilder is used to construct the BlueMatadorClient
  */
 public class BlueMatadorClientBuilder {
     /**
-     * exporter is an instance of the StatsExporter class which extends the DataDog StatsDClient
+     * client is an instance of the BlueMatadorNonBlockingStatsDClient class which extends the DataDog StatsDClient
      * The custom metrics are formatted and then sent to the Blue Matador agent through 
      * this class.
      */
-    private StatsExporter exporter;
+    // private BlueMatadorNonBlockingStatsDClient client;
+    // might be able to get rid of this if change to build function works
 
     /**
      * specifies the host to send the custom metrics to
@@ -35,7 +36,8 @@ public class BlueMatadorClientBuilder {
      */
     public BlueMatadorClientBuilder() {
         this.host = System.getenv("BLUEMATADOR_AGENT_HOST") != null ? System.getenv("BLUEMATADOR_AGENT_HOST") : "127.0.0.1";
-        this.port = System.getenv("BLUEMATADOR_AGENT_PORT") != null ? Integer.parseInt(System.getenv("BLUEMATADOR_AGENT_PORT")) : 8767;
+        // this && evaluation needs to check that it is a positive integer 
+        this.port = System.getenv("BLUEMATADOR_AGENT_PORT") != null && System.getenv("BLUEMATADOR_AGENT_PORT") > 0 ? Integer.parseInt(System.getenv("BLUEMATADOR_AGENT_PORT")) : 8767;
         this.prefix = null;
     }
 
@@ -82,17 +84,13 @@ public class BlueMatadorClientBuilder {
 
     /**
      * build is to chained onto the class constructor after all other chained methods.
-     * constructs an instance of the StatsExporter with the global 
+     * constructs an instance of the BlueMatadorNonBlockingStatsDClient with the global 
      * class connection variables i.e host, port, prefix
      * 
      * @return an instance of the BlueMatadorClient
      */
     public BlueMatadorClient build() throws Exception {
-        this.exporter = new StatsExporter(this.host, this.port, this.prefix);
-        
-
-        BlueMatadorClient client = new BlueMatadorClient();
-        client.exporter = this.exporter;
+        BlueMatadorClient client = new BlueMatadorClient(new BlueMatadorNonBlockingStatsDClient(this.host, this.port, this.prefix));
 
         return client;
     }

@@ -1,5 +1,4 @@
-package com.bluematador.app;
-
+package com.bluematador;
 /**
  * The Sanitizer class takes in metric string parameters and checks against illegal characters
  */

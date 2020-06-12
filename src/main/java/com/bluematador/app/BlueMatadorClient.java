@@ -1,6 +1,6 @@
-package com.bluematador.app;
-import com.timgroup.statsd.StatsExporter;
-import com.bluematador.app.Sanitizer;
+package com.bluematador;
+
+import com.timgroup.statsd.BlueMatadorNonBlockingStatsDClient;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -9,14 +9,18 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class BlueMatadorClient extends Sanitizer {
     /**
-     * exporter is an instance of the StatsExporter which extends the DataDog StatsDClient
+     * client is an instance of the BlueMatadorNonBlockingStatsDClient which extends the DataDog StatsDClient
      * The custom metrics are formatted and then sent to the Blue Matador agent through 
      * this class.
      */
-    public StatsExporter exporter;
+    private BlueMatadorNonBlockingStatsDClient client;
+
+    public BlueMatadorClient(BlueMatadorNonBlockingStatsDClient client) {
+        this.client = client
+    }
     
     /**
-     * prepareCount sanitizes your metrics checking for illegal characters within the string parameters
+     * _count sanitizes your metrics checking for illegal characters within the string parameters
      * it then determines whether to send your metric based on the given sample rate.
      * 
      * @param name The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
@@ -27,16 +31,16 @@ public class BlueMatadorClient extends Sanitizer {
      *  
      * @return void 
      */
-    private void prepareCount(String name, long value, double sampleRate, String[] tags) throws Exception {
+    private void _count(String name, long value, double sampleRate, String[] tags) throws Exception {
         if(this.sanitize(name, tags)) {
             if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
-                exporter.count(name, value / Math.max(0, Math.min(1.0, sampleRate)), tags);
+                client.count(name, value / Math.max(0, Math.min(1.0, sampleRate)), tags);
             }
         }
     }
 
      /**
-     * prepareGauge sanitizes your metrics checking for illegal characters within the string parameters
+     * _gauge sanitizes your metrics checking for illegal characters within the string parameters
      * it then determines whether to send your metric based on the given sample rate.
      * 
      * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
@@ -47,10 +51,10 @@ public class BlueMatadorClient extends Sanitizer {
      *  
      * @return void 
      */
-    private void prepareGauge(String name, long value, double sampleRate, String[] tags) throws Exception {
+    private void _gauge(String name, long value, double sampleRate, String[] tags) throws Exception {
         if(this.sanitize(name, tags)) {
             if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
-                exporter.recordGaugeValue(name, value, tags);
+                client.recordGaugeValue(name, value, tags);
             }
         }
     }
@@ -79,11 +83,26 @@ public class BlueMatadorClient extends Sanitizer {
      * @return void 
      */
     public void count(String name, long value, double sampleRate, String[] tags) throws Exception {
-        this.prepareCount(name, value, sampleRate, tags);
+        this._count(name, value, sampleRate, tags);
     }
 
+    public void count(String name, double value, double sampleRate, String[] tags) throws Exception {
+        this._count(name, value, sampleRate, tags);
+    }
+
+    /**
+     * sends a custom counter metric
+     * 
+     * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
+     * 
+     * value is set to 1
+     * sampleRate is set to 1
+     * tags are set to null 
+     * 
+     * @return void 
+     */
     public void count(String name) throws Exception {
-        this.prepareCount(name, 1, 1, new String[]{""});
+        this._count(name, 1, 1, null);
     }
 
     /**
@@ -98,7 +117,11 @@ public class BlueMatadorClient extends Sanitizer {
      * @return void 
      */
     public void count(String name, long value) throws Exception {
-        this.prepareCount(name, value, 1, new String[]{""});
+        this._count(name, value, 1, null);
+    }
+
+    public void count(String name, double value) throws Exception {
+        this._count(name, value, 1, null);
     }
 
     /**
@@ -113,7 +136,11 @@ public class BlueMatadorClient extends Sanitizer {
      * @return void 
      */
     public void count(String name, long value, double sampleRate) throws Exception {
-        this.prepareCount(name, value, sampleRate, new String[]{""});
+        this._count(name, value, sampleRate, null);
+    }
+
+    public void count(String name, double value, double sampleRate) throws Exception {
+        this._count(name, value, sampleRate, null);
     }
 
        /**
@@ -129,7 +156,7 @@ public class BlueMatadorClient extends Sanitizer {
      * @return void 
      */
     public void count(String name, String[] tags) throws Exception {
-        this.prepareCount(name, 1, 1, tags);
+        this._count(name, 1, 1, tags);
     }
 
        /**
@@ -145,7 +172,11 @@ public class BlueMatadorClient extends Sanitizer {
      * @return void 
      */
     public void count(String name, long value, String[] tags) throws Exception {
-        this.prepareCount(name, value, 1, tags);
+        this._count(name, value, 1, tags);
+    }
+
+    public void count(String name, double value, String[] tags) throws Exception {
+        this._count(name, value, 1, tags);
     }
 
     /**
@@ -160,7 +191,11 @@ public class BlueMatadorClient extends Sanitizer {
      * @return void 
      */
     public void gauge(String name, long value, double sampleRate, String[] tags) throws Exception {
-        this.prepareGauge(name, value, sampleRate, tags);
+        this._gauge(name, value, sampleRate, tags);
+    }
+
+    public void gauge(String name, double value, double sampleRate, String[] tags) throws Exception {
+        this._gauge(name, value, sampleRate, tags);
     }
 
      /**
@@ -175,9 +210,12 @@ public class BlueMatadorClient extends Sanitizer {
      * @return void 
      */
     public void gauge(String name, long value) throws Exception {
-        this.prepareGauge(name, value, 1, new String[]{""});   
+        this._gauge(name, value, 1, null);   
     }
 
+    public void gauge(String name, double value) throws Exception {
+        this._gauge(name, value, 1, null);   
+    }
      /**
      * sends a custom gauge metric
      * 
@@ -190,7 +228,11 @@ public class BlueMatadorClient extends Sanitizer {
      * @return void 
      */
     public void gauge(String name, long value, double sampleRate) throws Exception {
-        this.prepareGauge(name, value, sampleRate, new String[]{""});
+        this._gauge(name, value, sampleRate, null);
+    }
+
+    public void gauge(String name, double value, double sampleRate) throws Exception {
+        this._gauge(name, value, sampleRate, null);
     }
 
      /**
@@ -206,7 +248,11 @@ public class BlueMatadorClient extends Sanitizer {
      * @return void 
      */
     public void gauge(String name, long value, String[] tags) throws Exception {
-        this.prepareGauge(name, value, 1, tags);
+        this._gauge(name, value, 1, tags);
+    }
+
+    public void gauge(String name, double value, String[] tags) throws Exception {
+        this._gauge(name, value, 1, tags);
     }
 
     /**
@@ -215,7 +261,7 @@ public class BlueMatadorClient extends Sanitizer {
      * @return void
      */
     public void close() throws Exception {
-        exporter.close();
+        client.close();
     }
 
 }

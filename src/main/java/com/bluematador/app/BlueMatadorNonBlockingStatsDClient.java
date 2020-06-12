@@ -1,23 +1,27 @@
 package com.timgroup.statsd;
-import com.timgroup.statsd.NonBlockingStatsDClientBuilder;
-import com.timgroup.statsd.NonBlockingStatsDClient;
+
 
 /**
- * StatsExporter extends Datadogs NonBlockingStatsdClient
+ * BlueMatadorNonBlockingStatsDClient extends Datadogs NonBlockingStatsdClient
  * to allow custom functionality
  */
-public class StatsExporter extends NonBlockingStatsDClient {
+public class BlueMatadorNonBlockingStatsDClient extends NonBlockingStatsDClient {
+
+    // need to find the right return type here
+    private NonBlockingStatsDClient.staticAddressResolution clientAddress() {
+        return NonBlockingStatsDClientBuilder.staticAddressResolution(host, port);
+    }
 
     /**
-     * constructs the StatsExporter and super class
+     * constructs the BlueMatadorNonBlockingStatsDClient and super class
      * 
      * @param host 
      * @param port
      * @param prefix
      * 
      */
-    public StatsExporter(String host, int port, String prefix) throws Exception {
-        super(prefix, 4096, new String[]{""}, null, NonBlockingStatsDClientBuilder.staticAddressResolution(host, port), NonBlockingStatsDClientBuilder.staticAddressResolution(host, port), 100, 1096, 1400, null, 512, 1, 1, false, false, 0);
+    public BlueMatadorNonBlockingStatsDClient(String host, int port, String prefix) throws Exception {
+        super(prefix, 4096, null, null, this.clientAddress, this.clientAddress, 100, 1096, 1400, null, 512, 1, 1, false, false, 0);
     }
     
     /**
