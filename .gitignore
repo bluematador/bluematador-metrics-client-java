@@ -1,7 +1,6 @@
 # Compiled class file
 *.class/
 /target
-/src/main/java/com/bluematador/app/Client.java
 
 # Log file
 *.log
