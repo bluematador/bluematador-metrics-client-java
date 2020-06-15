@@ -63,13 +63,13 @@ public class BlueMatadorMetricClient {
 The following are all valid ways to send a gauge metric:
 
 ```
-Client.gauge('testGauge', 23.2323);
+Client.gauge("request.size", 23.2323);
 
-Client.gauge('testGauge', 23, 1);
+Client.gauge("request.size", 23, 1);
 
-Client.gauge('testGauge', 23, new String[]{ "environment:Prod", "account_id:1232151" });
+Client.gauge("request.size", 23, new String[]{ "environment:Prod", "account_id:1232151" });
 
-Client.gauge('testGauge', 23, 1, new String[]{ "environment:Prod", "account_id:1232151" });
+Client.gauge("request.size", 23, 1, new String[]{ "environment:Prod", "account_id:1232151" });
 
 ```
 
@@ -94,7 +94,7 @@ public class BlueMatadorMetricClient {
             .withPrefix("app")
             .build();
 
-            Client.count("request.size", 2, .5, new String[]{"env:dev"});
+            Client.count("homepage.clicks", 2, .5, new String[]{"env:dev"});
 
     }
 }
@@ -104,13 +104,13 @@ public class BlueMatadorMetricClient {
 The following are all valid ways to send a count metric: 
 
 ```
-Client.count('testcount', 23.2323);
+Client.count("homepage.clicks", 23.2323);
 
-Client.count('testcount', 23, .9);
+Client.count("homepage.clicks", 23, .9);
 
-Client.count('testcount', 23, new String[]{ "environment:Prod", "account_id:1232151" });
+Client.count("homepage.clicks", 23, new String[]{ "environment:Prod", "account_id:1232151" });
 
-Client.count('testcount', 23, .7, new String[]{ "environment:Prod", "account_id:1232151" });
+Client.count("homepage.clicks", 23, .7, new String[]{ "environment:Prod", "account_id:1232151" });
 
 ```
 
