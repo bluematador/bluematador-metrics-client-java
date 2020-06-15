@@ -24,7 +24,7 @@ public class BlueMatadorClient {
      * sanitizes a string by replacing illegal characters with _
      * 
      * @param name the string to sanitize
-     * @param character the optional illegal character to sanitize. : for metric name, # for metric tags
+     * @param character the optional illegal character to sanitize. : for metric name, # for metric labels
      * 
      * @return the sanitized string
      */
@@ -42,16 +42,16 @@ public class BlueMatadorClient {
     /**
      * sends each tag to the sanitize function to replace illegal characters # and | with _
      * 
-     * @param tags the array of tags to sanitize
+     * @param labels the array of labels to sanitize
      * 
-     * @return the array of sanitized tags
+     * @return the array of sanitized labels
      */
-    private String[] sanitizeTags(String[] tags) {
-        String[] sanitizedTags = new String[tags.length];
-        for(int i = 0; i < tags.length; i++) {
-            sanitizedTags[i] = this.sanitize(tags[i], "#");
+    private String[] sanitizeLabels(String[] labels) {
+        String[] sanitizedLabels = new String[labels.length];
+        for(int i = 0; i < labels.length; i++) {
+            sanitizedLabels[i] = this.sanitize(labels[i], "#");
         }
-        return sanitizedTags;
+        return sanitizedLabels;
     }
     
     /**
@@ -61,16 +61,16 @@ public class BlueMatadorClient {
      * @param name The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
      * @param value  The amount to increment the metric by, the default is 1.
      * @param sampleRate sends only a sample of data e.g. 0.5 indicates 50% of data being sent. Default value is 1
-     * @param tags adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
+     * @param labels adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
      * formatted with a colon separator e.g. ['account:12345', 'env:development']. Cannot contain '#' or '|'
      *  
      * @return void 
      */
-    private void _count(String name, double value, double sampleRate, String[] tags) {
+    private void _count(String name, double value, double sampleRate, String[] labels) {
         String metricName = this.sanitize(name, ":");
-        String[] metricTags = tags != null ? this.sanitizeTags(tags) : tags;
+        String[] metricLabels = labels != null ? this.sanitizeLabels(labels) : labels;
             if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
-                client.count(metricName, value / Math.max(0, Math.min(1.0, sampleRate)), metricTags);
+                client.count(metricName, value / Math.max(0, Math.min(1.0, sampleRate)), metricLabels);
             }
     }
 
@@ -81,16 +81,16 @@ public class BlueMatadorClient {
      * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
      * @param value      The latest value to set for the metric
      * @param sampleRate sends only a sample of data e.g. 0.5 indicates 50% of data being sent. Default value is 1
-     * @param tags       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
+     * @param labels       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
      * formatted with a colon separator e.g. ['account:12345', 'env:development']. Cannot contain '#' or '|'
      *  
      * @return void 
      */
-    private void _gauge(String name, double value, double sampleRate, String[] tags) {
+    private void _gauge(String name, double value, double sampleRate, String[] labels) {
         String metricName = this.sanitize(name, ":");
-        String[] metricTags = tags != null ? this.sanitizeTags(tags) : tags;
+        String[] metricLabels = labels != null ? this.sanitizeLabels(labels) : labels;
             if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
-                client.recordGaugeValue(metricName, value, metricTags);
+                client.recordGaugeValue(metricName, value, metricLabels);
             }
     }
     
@@ -112,17 +112,17 @@ public class BlueMatadorClient {
      * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
      * @param value      The amount to increment the metric by, the default is 1.
      * @param sampleRate sends only a sample of data e.g. 0.5 indicates 50% of data being sent. Default value is 1
-     * @param tags       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
+     * @param labels       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
      * formatted with a colon separator e.g. ['account:12345', 'env:development']. Cannot contain '#' or '|'
      * 
      * @return void 
      */
-    public void count(String name, long value, double sampleRate, String[] tags) {
-        this._count(name, (double)value, sampleRate, tags);
+    public void count(String name, long value, double sampleRate, String[] labels) {
+        this._count(name, (double)value, sampleRate, labels);
     }
 
-    public void count(String name, double value, double sampleRate, String[] tags) {
-        this._count(name, value, sampleRate, tags);
+    public void count(String name, double value, double sampleRate, String[] labels) {
+        this._count(name, value, sampleRate, labels);
     }
 
     /**
@@ -132,7 +132,7 @@ public class BlueMatadorClient {
      * 
      * value is set to 1
      * sampleRate is set to 1
-     * tags are set to null 
+     * labels are set to null 
      * 
      * @return void 
      */
@@ -147,7 +147,7 @@ public class BlueMatadorClient {
      * @param value      The amount to increment the metric by, the default is 1.
      * 
      * sampleRate is set to 1
-     * tags are set to an empty array
+     * labels are set to an empty array
      * 
      * @return void 
      */
@@ -166,7 +166,7 @@ public class BlueMatadorClient {
      * @param value      The amount to increment the metric by, the default is 1.
      * @param sampleRate sends only a sample of data e.g. 0.5 indicates 50% of data being sent. Default value is 1
      * 
-     * tags are set to an empty array
+     * labels are set to an empty array
      * 
      * @return void 
      */
@@ -182,7 +182,7 @@ public class BlueMatadorClient {
      * sends a custom counter metric
      * 
      * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
-     * @param tags       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
+     * @param labels       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
      * formatted with a colon separator e.g. ['account:12345', 'env:development']. Cannot contain '#' or '|'
      * 
      * value is set to 1
@@ -190,8 +190,8 @@ public class BlueMatadorClient {
      * 
      * @return void 
      */
-    public void count(String name, String[] tags) {
-        this._count(name, 1, 1, tags);
+    public void count(String name, String[] labels) {
+        this._count(name, 1, 1, labels);
     }
 
        /**
@@ -199,19 +199,19 @@ public class BlueMatadorClient {
      * 
      * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
      * @param value      The amount to increment the metric by, the default is 1.
-     * @param tags       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
+     * @param labels       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
      * formatted with a colon separator e.g. ['account:12345', 'env:development']. Cannot contain '#' or '|'
      * 
      * sampleRate is set to 1
      * 
      * @return void 
      */
-    public void count(String name, long value, String[] tags) {
-        this._count(name, value, 1, tags);
+    public void count(String name, long value, String[] labels) {
+        this._count(name, value, 1, labels);
     }
 
-    public void count(String name, double value, String[] tags) {
-        this._count(name, value, 1, tags);
+    public void count(String name, double value, String[] labels) {
+        this._count(name, value, 1, labels);
     }
 
     /**
@@ -220,17 +220,17 @@ public class BlueMatadorClient {
      * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
      * @param value      The latest value to set for the metric
      * @param sampleRate sends only a sample of data e.g. 0.5 indicates 50% of data being sent. Default value is 1
-     * @param tags       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
+     * @param labels       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
      * formatted with a colon separator e.g. ['account:12345', 'env:development']. Cannot contain '#' or '|'
      *  
      * @return void 
      */
-    public void gauge(String name, long value, double sampleRate, String[] tags) {
-        this._gauge(name, value, sampleRate, tags);
+    public void gauge(String name, long value, double sampleRate, String[] labels) {
+        this._gauge(name, value, sampleRate, labels);
     }
 
-    public void gauge(String name, double value, double sampleRate, String[] tags) {
-        this._gauge(name, value, sampleRate, tags);
+    public void gauge(String name, double value, double sampleRate, String[] labels) {
+        this._gauge(name, value, sampleRate, labels);
     }
 
      /**
@@ -240,7 +240,7 @@ public class BlueMatadorClient {
      * @param value      The latest value to set for the metric
      * 
      * sampleRate is set to 1
-     * tags are set to an empty array
+     * labels are set to an empty array
      *  
      * @return void 
      */
@@ -258,7 +258,7 @@ public class BlueMatadorClient {
      * @param value      The latest value to set for the metric
      * @param sampleRate sends only a sample of data e.g. 0.5 indicates 50% of data being sent. Default value is 1
      * 
-     * tags are set to an empty array
+     * labels are set to an empty array
      *  
      * @return void 
      */
@@ -275,19 +275,19 @@ public class BlueMatadorClient {
      * 
      * @param name       The metric name e.g. 'myapp.request.size'. Cannot contain '#' or '|'
      * @param value      The latest value to set for the metric
-     * @param tags       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
+     * @param labels       adds metadata to a metric. Can be specified as an array of strings with key-value pairs 
      * formatted with a colon separator e.g. ['account:12345', 'env:development']. Cannot contain '#' or '|'
      *  
      * sampleRate is set to 1
      * 
      * @return void 
      */
-    public void gauge(String name, long value, String[] tags) {
-        this._gauge(name, value, 1, tags);
+    public void gauge(String name, long value, String[] labels) {
+        this._gauge(name, value, 1, labels);
     }
 
-    public void gauge(String name, double value, String[] tags) {
-        this._gauge(name, value, 1, tags);
+    public void gauge(String name, double value, String[] labels) {
+        this._gauge(name, value, 1, labels);
     }
 
     /**

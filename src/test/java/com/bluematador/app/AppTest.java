@@ -1,4 +1,4 @@
-package com.bluematador.app;
+package com.bluematador;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -11,7 +11,7 @@ import static junit.framework.Assert.assertTrue;
 public class AppTest 
     extends TestCase
 {
-    private BlueMatadorClient bluematador = new BlueMatadorClient();
+    private BlueMatadorClient bluematador = new BlueMatadorClientBuilder().build();
 
     public void testIllegalMetricName() {
 
