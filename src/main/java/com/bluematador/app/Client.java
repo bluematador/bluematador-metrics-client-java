@@ -1,4 +1,4 @@
-package com.bluematador;
+package com.test;
 
 import com.bluematador.BlueMatadorClientBuilder;
 import org.apache.logging.log4j.Logger;
@@ -20,52 +20,16 @@ public class Client {
             .withPrefix("app")
             .build();
 
-        try {
-            bluematador.count("counter.1");
-        } catch(Exception e) {
-            logger.error(e);
-        }
-        try {
-            bluematador.count("counter.2", 1);
-        } catch(Exception e) {
-            logger.error(e);
-        }
-        try {
-            bluematador.count("counter.3", 2, .5);
-        } catch(Exception e) {
-            logger.error(e);
-        }
-        try {
-            bluematador.count("counter.4", 1, new String[]{"Env:dev", "account:122321", "tag3:hello", "tag4:yoyo", "tag5:jojo"});
-        } catch(Exception e) {
-            logger.error(e);
-        }
-        try {
-            bluematador.count("counter.5", 1, 2, new String[]{"Env:dev", "account:122321"});
-        } catch(Exception e) {
-            logger.error(e);
-        }
-        try {
-            bluematador.gauge("gauge.1", 23);
-        } catch(Exception e) {
-            logger.error(e);
-        }
-        try {
-            bluematador.gauge("gauge.2", 32, 1);
-        } catch(Exception e) {
-            logger.error(e);
-        }
-        try {
-            bluematador.gauge("gauge.3", 23, .1, new String[]{"Env:dev", "account:122321"});
-        } catch(Exception e) {
-            logger.error(e);
-        }
-        try {
-            bluematador.gauge("gauge.4", 23, new String[]{"Env:dev", "account:122321"});
-        } catch(Exception e) {
-            logger.error(e);
-        }
 
+            bluematador.count("counter.1");
+            bluematador.count("counter.2", 1);
+            bluematador.count("counter.3", 2, 1);
+            bluematador.count("counter.4", 1, new String[]{"Env:dev", "account:122321", "tag3:hello", "tag4:yoyo", "tag5:jojo"});
+            bluematador.count("counter.5", 1, 2, new String[]{"Env:dev", "account:122321"});
+            bluematador.gauge("gauge.1", 23);
+            bluematador.gauge("gauge.2", 32, 1);
+            bluematador.gauge(":gauge|3", 23, 1, new String[]{"#Env:dev", "|account:#122321"});
+            bluematador.gauge("gauge|4", 23, new String[]{"Env:dev", "account:122321"});
         try {
             bluematador.close();
         } catch(Exception e) {

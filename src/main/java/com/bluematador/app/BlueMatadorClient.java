@@ -21,16 +21,17 @@ public class BlueMatadorClient {
 
 
     /**
-     * sanitizes a string by replacing illegal characters : and | with _
+     * sanitizes a string by replacing illegal characters with _
      * 
-     * @param string the string to sanitize
+     * @param name the string to sanitize
+     * @param character the optional illegal character to sanitize. : for metric name, # for metric tags
      * 
      * @return the sanitized string
      */
-    private String sanitize(String string) {
-        var String sanitizedString = string;
-        if(sanitizedString.contains(":")) {
-            sanitizedString = sanitizedString.replace(":", "_");
+    private String sanitize(String name, String character) {
+        String sanitizedString = name;
+        if(sanitizedString.contains(character)) {
+            sanitizedString = sanitizedString.replace(character, "_");
         } 
         if(sanitizedString.contains("|")) {
             sanitizedString = sanitizedString.replace("|", "_");
@@ -39,7 +40,7 @@ public class BlueMatadorClient {
     }
 
     /**
-     * sends each tag to the sanitize function to replace illegal characters : and | with _
+     * sends each tag to the sanitize function to replace illegal characters # and | with _
      * 
      * @param tags the array of tags to sanitize
      * 
@@ -48,7 +49,7 @@ public class BlueMatadorClient {
     private String[] sanitizeTags(String[] tags) {
         String[] sanitizedTags = new String[tags.length];
         for(int i = 0; i < tags.length; i++) {
-            sanitizedTags[i] = this.sanitize(tags[i]);
+            sanitizedTags[i] = this.sanitize(tags[i], "#");
         }
         return sanitizedTags;
     }
@@ -65,9 +66,9 @@ public class BlueMatadorClient {
      *  
      * @return void 
      */
-    private void _count(String name, double value, double sampleRate, String[] tags) throws Exception {
-        var metricName = this.sanitize(name);
-        var metricTags = this.sanitizeTags(tags);
+    private void _count(String name, double value, double sampleRate, String[] tags) {
+        String metricName = this.sanitize(name, ":");
+        String[] metricTags = tags != null ? this.sanitizeTags(tags) : tags;
             if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
                 client.count(metricName, value / Math.max(0, Math.min(1.0, sampleRate)), metricTags);
             }
@@ -85,9 +86,9 @@ public class BlueMatadorClient {
      *  
      * @return void 
      */
-    private void _gauge(String name, double value, double sampleRate, String[] tags) throws Exception {
-        var metricName = this.sanitize(name);
-        var metricTags = this.sanitizeTags(tags);
+    private void _gauge(String name, double value, double sampleRate, String[] tags) {
+        String metricName = this.sanitize(name, ":");
+        String[] metricTags = tags != null ? this.sanitizeTags(tags) : tags;
             if(!this.isInvalidSample(Math.max(0, Math.min(1.0, sampleRate)))) {
                 client.recordGaugeValue(metricName, value, metricTags);
             }
@@ -105,10 +106,6 @@ public class BlueMatadorClient {
         return sampleRate != 1 && ThreadLocalRandom.current().nextDouble() > sampleRate;
     }
 
-    // private double toDouble(long num) {
-
-    // }
-
     /**
      * sends a custom counter metric
      * 
@@ -120,11 +117,11 @@ public class BlueMatadorClient {
      * 
      * @return void 
      */
-    public void count(String name, long value, double sampleRate, String[] tags) throws Exception {
+    public void count(String name, long value, double sampleRate, String[] tags) {
         this._count(name, (double)value, sampleRate, tags);
     }
 
-    public void count(String name, double value, double sampleRate, String[] tags) throws Exception {
+    public void count(String name, double value, double sampleRate, String[] tags) {
         this._count(name, value, sampleRate, tags);
     }
 
@@ -139,7 +136,7 @@ public class BlueMatadorClient {
      * 
      * @return void 
      */
-    public void count(String name) throws Exception {
+    public void count(String name) {
         this._count(name, 1, 1, null);
     }
 
@@ -154,11 +151,11 @@ public class BlueMatadorClient {
      * 
      * @return void 
      */
-    public void count(String name, long value) throws Exception {
+    public void count(String name, long value) {
         this._count(name, value, 1, null);
     }
 
-    public void count(String name, double value) throws Exception {
+    public void count(String name, double value) {
         this._count(name, value, 1, null);
     }
 
@@ -173,11 +170,11 @@ public class BlueMatadorClient {
      * 
      * @return void 
      */
-    public void count(String name, long value, double sampleRate) throws Exception {
+    public void count(String name, long value, double sampleRate) {
         this._count(name, value, sampleRate, null);
     }
 
-    public void count(String name, double value, double sampleRate) throws Exception {
+    public void count(String name, double value, double sampleRate) {
         this._count(name, value, sampleRate, null);
     }
 
@@ -193,7 +190,7 @@ public class BlueMatadorClient {
      * 
      * @return void 
      */
-    public void count(String name, String[] tags) throws Exception {
+    public void count(String name, String[] tags) {
         this._count(name, 1, 1, tags);
     }
 
@@ -209,11 +206,11 @@ public class BlueMatadorClient {
      * 
      * @return void 
      */
-    public void count(String name, long value, String[] tags) throws Exception {
+    public void count(String name, long value, String[] tags) {
         this._count(name, value, 1, tags);
     }
 
-    public void count(String name, double value, String[] tags) throws Exception {
+    public void count(String name, double value, String[] tags) {
         this._count(name, value, 1, tags);
     }
 
@@ -228,11 +225,11 @@ public class BlueMatadorClient {
      *  
      * @return void 
      */
-    public void gauge(String name, long value, double sampleRate, String[] tags) throws Exception {
+    public void gauge(String name, long value, double sampleRate, String[] tags) {
         this._gauge(name, value, sampleRate, tags);
     }
 
-    public void gauge(String name, double value, double sampleRate, String[] tags) throws Exception {
+    public void gauge(String name, double value, double sampleRate, String[] tags) {
         this._gauge(name, value, sampleRate, tags);
     }
 
@@ -247,11 +244,11 @@ public class BlueMatadorClient {
      *  
      * @return void 
      */
-    public void gauge(String name, long value) throws Exception {
+    public void gauge(String name, long value) {
         this._gauge(name, value, 1, null);   
     }
 
-    public void gauge(String name, double value) throws Exception {
+    public void gauge(String name, double value) {
         this._gauge(name, value, 1, null);   
     }
      /**
@@ -265,11 +262,11 @@ public class BlueMatadorClient {
      *  
      * @return void 
      */
-    public void gauge(String name, long value, double sampleRate) throws Exception {
+    public void gauge(String name, long value, double sampleRate) {
         this._gauge(name, value, sampleRate, null);
     }
 
-    public void gauge(String name, double value, double sampleRate) throws Exception {
+    public void gauge(String name, double value, double sampleRate) {
         this._gauge(name, value, sampleRate, null);
     }
 
@@ -285,11 +282,11 @@ public class BlueMatadorClient {
      * 
      * @return void 
      */
-    public void gauge(String name, long value, String[] tags) throws Exception {
+    public void gauge(String name, long value, String[] tags) {
         this._gauge(name, value, 1, tags);
     }
 
-    public void gauge(String name, double value, String[] tags) throws Exception {
+    public void gauge(String name, double value, String[] tags) {
         this._gauge(name, value, 1, tags);
     }
 
