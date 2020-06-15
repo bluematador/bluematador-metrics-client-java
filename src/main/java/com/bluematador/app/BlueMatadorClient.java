@@ -28,7 +28,7 @@ public class BlueMatadorClient {
      * 
      * @return the sanitized string
      */
-    private String sanitize(String name, String character) {
+    protected String sanitize(String name, String character) {
         String sanitizedString = name;
         if(sanitizedString.contains(character)) {
             sanitizedString = sanitizedString.replace(character, "_");
@@ -46,7 +46,7 @@ public class BlueMatadorClient {
      * 
      * @return the array of sanitized labels
      */
-    private String[] sanitizeLabels(String[] labels) {
+    protected String[] sanitizeLabels(String[] labels) {
         String[] sanitizedLabels = new String[labels.length];
         for(int i = 0; i < labels.length; i++) {
             sanitizedLabels[i] = this.sanitize(labels[i], "#");

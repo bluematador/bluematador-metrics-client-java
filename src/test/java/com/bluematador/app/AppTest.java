@@ -1,4 +1,6 @@
 package com.bluematador;
+
+import com.bluematador.BlueMatadorClientBuilder;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -11,67 +13,33 @@ import static junit.framework.Assert.assertTrue;
 public class AppTest 
     extends TestCase
 {
-    private BlueMatadorClient bluematador = new BlueMatadorClientBuilder().build();
+    public BlueMatadorClient bluematador = this.initClient();
+ 
+    public BlueMatadorClient initClient() {
+        BlueMatadorClient client;
+        try {
+            client = new BlueMatadorClientBuilder().build();
+         } catch (Exception e) {
+             client = null;
+             System.out.println(e);
+         }
+         return client;
+    }
+    
 
     public void testIllegalMetricName() {
-
-        try {
-            bluematador.count("countExample:main", 1, 1, new String[]{"Env:dev", "account:122321"});
-        } catch (Exception e) {
-            assertEquals("Result", "Illegal character : found in metric name", e.getMessage());
-        }
-
-        try {
-            bluematador.gauge("gaugeExample:main", 23.2);
-        } catch (Exception e) {
-            assertEquals("Result", "Illegal character : found in metric name", e.getMessage());
-        }
-
+        String sanitizedMetricName = bluematador.sanitize("my.app:new", ":");
+        assertEquals("Result", "my.app_new", sanitizedMetricName);
     }
 
     public void testIllegalMetricNameTwo() {
-        try {
-            bluematador.count("countExample|main");
-        } catch (Exception e) {
-            assertEquals("Result", "Illegal character | found in metric name", e.getMessage());
-        }
-
-        try {
-            bluematador.gauge("gaugeExample|main", 22);
-        } catch (Exception e) {
-            assertEquals("Result", "Illegal character | found in metric name", e.getMessage());
-        }
+        String sanitizedMetricName = bluematador.sanitize("my.app|new", ":");
+        assertEquals("Result", "my.app_new", sanitizedMetricName);
     }
 
     public void testIllegalMeticTag() {
-        try {
-            bluematador.count("countExample", new String[]{"env:#dev"});
-        } catch (Exception e) {
-            assertEquals("Result", "Illegal character # found in metric tags", e.getMessage());
-        }
-    }
-
-    public void testIllegalMeticTagTwo() {
-        try {
-            bluematador.gauge("gaugeExample", 101.21, new String[]{"env:dev", "account|123"});
-        } catch (Exception e) {
-            assertEquals("Result", "Illegal character | found in metric tags", e.getMessage());
-        }
-    }
-
-    public void testIllegalMeticTagThree() {
-        try {
-            bluematador.count("counterExample", 2, new String[]{"env:dev, prod"});
-        } catch (Exception e) {
-            assertEquals("Result", "Illegal character , found in metric tags", e.getMessage());
-        }
-    }
-
-    public void testIllegalMeticTagFour() {
-        try {
-            bluematador.gauge("gaugeExample", 123, new String[]{"account@123"});
-        } catch (Exception e) {
-            assertEquals("Result", "Illegal character @ found in metric tags", e.getMessage());
-        }
+        String[] sanitizedMetricTags = bluematador.sanitizeLabels(new String[]{"env:#dev", "account|id:1234"});
+        assertEquals("Result", "env:_dev", sanitizedMetricTags[0]);
+        assertEquals("Result Two", "account_id:1234", sanitizedMetricTags[1]);
     }
 }
