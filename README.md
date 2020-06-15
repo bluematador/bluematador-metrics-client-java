@@ -4,7 +4,17 @@
 
 ## Setup
 
-To start using the Blue Matador metric client, import the `BlueMatadorClient` class and the `BlueMatadorClientBuilder`
+The Blue Matador Metric Client is distributed through maven. Start by adding the following configuration to your pom.xml
+
+```
+<dependency>
+    <groupId>com.bluematador</groupId>
+    <artifactId>blue-matadador-client</artifactId>
+    <version>0.0.1</version>
+</dependency>
+```
+
+To start using the Blue Matador Metric Client, import the `BlueMatadorClient` class and the `BlueMatadorClientBuilder`
 class. The `BlueMatadorClientBuilder` exposes methods that allows customization to the `BlueMatadorClient` on build.
 
  * `.withPrefix(String metricPrefix)` The withPrefix method takes a string that will be prepended to the name of every metric you send. 
@@ -32,7 +42,7 @@ public class BlueMatadorMetricClient {
 
 ```
 
-Once you have an instance of the Blue Matador metric client in your code you can start sending custom metrics. 
+Once you have an instance of the Blue Matador Metric Client in your code you can start sending custom metrics. 
 
 ### Gauge
 `gauge(name, value, [sampleRate], [labels])`
@@ -110,6 +120,9 @@ The following are all valid ways to send a count metric:
 ```
 # count 1
 Client.count("homepage.clicks");
+
+# count 2
+Client.count("hompage.clicks", 2);
 
 # count 1 but sample 50%
 Client.count("homepage.clicks", 1, 0.5);
