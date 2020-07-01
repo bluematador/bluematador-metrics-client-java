@@ -1,16 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <groupId>com.bluematador</groupId>
-  <artifactId>blue-matadador-client</artifactId>
+  <artifactId>blue-matadador-metrics-client</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
   <packaging>jar</packaging>
-  <version>0.0.1</version>
   <name>blue-matadador-metrics-client</name>
   <url>http://maven.apache.org</url>
+
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -34,23 +38,25 @@
       <version>2.13.2</version>
     </dependency>
   </dependencies>
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>com.github.platform-team</groupId>
+        <artifactId>aws-maven</artifactId>
+        <version>6.0.0</version>
+      </extension>
+    </extensions>
+  </build>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>maven.bluematador.com</id>
+      <url>s3://maven.bluematador.com/snapshot</url>
+    </snapshotRepository>
+    <repository>
+      <id>maven.bluematador.com</id>
+      <url>s3://maven.bluematador.com/release</url>
+    </repository>
+  </distributionManagement>
 </project>
-<build>
-  <extensions>
-    <extension>
-      <groupId>com.github.platform-team</groupId>
-      <artifactId>aws-maven</artifactId>
-      <version>6.0.0</version>
-    </extension>
-  </extensions>
-</build>
-<distributionManagement>
-  <snapshotRepository>
-    <id>maven.bluematador.com</id>
-    <url>s3://maven.bluematador.com/snapshot</url>
-  </snapshotRepository>
-  <repository>
-    <id>maven.bluematador.com</id>
-    <url>s3://maven.bluematador.com/release</url>
-  </repository>
-</distributionManagement>
