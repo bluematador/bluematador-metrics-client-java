@@ -19,19 +19,38 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-  <groupId>com.datadoghq</groupId>
-  <artifactId>java-dogstatsd-client</artifactId>
-  <version>2.10.1</version>
-</dependency>
-<dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-api</artifactId>
-    <version>2.13.0</version>
-  </dependency>
-  <dependency>
-    <groupId>org.apache.logging.log4j</groupId>
-    <artifactId>log4j-core</artifactId>
-    <version>2.13.0</version>
-  </dependency>
+      <groupId>com.datadoghq</groupId>
+      <artifactId>java-dogstatsd-client</artifactId>
+      <version>2.10.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>2.13.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>2.13.0</version>
+    </dependency>
   </dependencies>
 </project>
+<build>
+  <extensions>
+    <extension>
+      <groupId>com.github.platform-team</groupId>
+      <artifactId>aws-maven</artifactId>
+      <version>6.0.0</version>
+    </extension>
+  </extensions>
+</build>
+<distributionManagement>
+  <snapshotRepository>
+    <id>maven.bluematador.com</id>
+    <url>s3://maven.bluematador.com/snapshot</url>
+  </snapshotRepository>
+  <repository>
+    <id>maven.bluematador.com</id>
+    <url>s3://maven.bluematador.com/release</url>
+  </repository>
+</distributionManagement>
