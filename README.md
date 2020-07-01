@@ -1,4 +1,4 @@
-# Blue Matador Metric Client
+# Blue Matador Java Metrics Client
 
 Send StatsD-style custom metrics to your Blue Matador account. Requires a [Blue Matador](https://www.bluematador.com) account with agents installed.
 
@@ -48,10 +48,10 @@ Once you have an instance of the Blue Matador Metric Client in your code you can
 
 ### Gauge
 `gauge(name, value, [sampleRate], [labels])`
-  * `Name: (required)` The metric name e.g. 'myapp.request.size'. Cannot contain ':' or '|'
-  * `Value: (required)` The latest value to set for the metric
-  * `sampleRate: (optional)` sends only a sample of data e.g. 0.5 indicates 50% of data being sent to the agent. Only useful to cut down on network usage or agent resource usage on extremely high-volume metrics. Default value is 1
-  * `labels: (optional)`  adds metadata to a metric. Can be specified as an array of strings with key-value pairs formatted with a colon separator e.g. ['account:12345']. Cannot contain '#' or '|'
+  * `name: (required)` The metric name e.g. 'myapp.request.size'. Cannot contain `:` or `|`
+  * `value: (required)` The latest value to set for the metric
+  * `sampleRate: (optional)` sends only a sample of data e.g. `0.5` indicates 50% of data being sent to the agent. Only useful to cut down on network usage or agent resource usage on extremely high-volume metrics. Default value is 1
+  * `labels: (optional)`  adds metadata to a metric. Can be specified as an array of strings with key-value pairs formatted with a colon separator e.g. `["account:12345"]`. Cannot contain `#` or `|`
 
 ```
 import com.bluematador.BlueMatadorClient;
@@ -61,12 +61,12 @@ public class BlueMatadorMetricClient {
 
     public static void main(String[] args) throws Exception {
 
-        BlueMatadorClient Client = new BlueMatadorClientBuilder()
+        BlueMatadorClient client = new BlueMatadorClientBuilder()
             .withPrefix("app")
             .build();
 
-            Client.gauge("request.size", 25, 1, new String[]{"env:dev"});
-
+        client.gauge("request.size", 25, 1, new String[]{"env:dev"});
+        client.close();
     }
 }
 
@@ -76,27 +76,25 @@ The following are all valid ways to send a gauge metric:
 
 ```
 # gauge 100
-Client.gauge("request.size", 100);
+client.gauge("request.size", 100);
 
 # gauge 100 but sample 50%
-Client.gauge("request.size", 100, 0.5);
+client.gauge("request.size", 100, 0.5);
 
 # gauge 100 with labels
-Client.gauge("request.size", 100, new String[]{ "environment:Prod", "api" });
+client.gauge("request.size", 100, new String[]{ "environment:Prod", "api" });
 
 # gauge 100, sample 50%, and send labels
-Client.gauge("request.size", 100, 0.5, new String[]{ "environment:Prod", "api" });
+client.gauge("request.size", 100, 0.5, new String[]{ "environment:Prod", "api" });
 
 ```
 
 ### Count
 `count(name, [value], [sampleRate], [labels])`
-  * `Name: (required)` The metric name e.g. 'myapp.request.size'. Cannot contain ':' or '|'
-  * `Value: (optional)` the amount to increment the metric by, the default is 1.
-  * `sampleRate: (optional)` sends only a sample of data e.g. 0.5 indicates 50% of data being sent to the agent. Only useful to cut down on network usage or agent resource usage on extremely high-volume metrics. Default value is 1. Count values that are sent are scaled based on sampleRate.
-  * `labels: (optional)`  adds metadata to a metric. Can be specified as an array of strings with key-value pairs formatted with a colon separator e.g. ['account:12345']. Cannot contain '#' or '|'
-
-**Note:** because the count value is optional, if you want to set the sampleRate the count value must be set as well.  
+  * `name: (required)` The metric name e.g. 'myapp.request.size'. Cannot contain `:` or `|`
+  * `value: (optional)` the amount to increment the metric by, the default is 1.
+  * `sampleRate: (optional)` sends only a sample of data e.g. `0.5` indicates 50% of data being sent to the agent. Only useful to cut down on network usage or agent resource usage on extremely high-volume metrics. Default value is 1. Count values that are sent are scaled based on sampleRate.
+  * `labels: (optional)`  adds metadata to a metric. Can be specified as an array of strings with key-value pairs formatted with a colon separator e.g. `["account:12345"]`. Cannot contain `#` or `|`
 
 ```
 import com.bluematador.BlueMatadorClient;
@@ -110,8 +108,8 @@ public class BlueMatadorMetricClient {
             .withPrefix("app")
             .build();
 
-            Client.count("homepage.clicks", 2, .5, new String[]{"env:dev"});
-
+        client.count("homepage.clicks", 2, 0.5, new String[]{"env:dev"});
+        client.close()
     }
 }
 
@@ -121,19 +119,19 @@ The following are all valid ways to send a count metric:
 
 ```
 # count 1
-Client.count("homepage.clicks");
+client.count("homepage.clicks");
 
 # count 2
-Client.count("hompage.clicks", 2);
+client.count("hompage.clicks", 2);
 
 # count 1 but sample 50%
-Client.count("homepage.clicks", 1, 0.5);
+client.count("homepage.clicks", 1, 0.5);
 
 # count 2 and send labels
-Client.count("homepage.clicks", 2, new String[]{ "environment:Prod", "homepage" });
+client.count("homepage.clicks", 2, new String[]{ "environment:Prod", "homepage" });
 
 # count 2, sample 50%, and send labels
-Client.count("homepage.clicks", 2, 0.5, new String[]{ "environment:Prod", "homepage" });
+client.count("homepage.clicks", 2, 0.5, new String[]{ "environment:Prod", "homepage" });
 
 ```
 
@@ -142,7 +140,7 @@ Client.count("homepage.clicks", 2, 0.5, new String[]{ "environment:Prod", "homep
 The close method should be called when shutting down your app.
 
 ```
-Client.close();
+client.close();
 ```
 
 
