@@ -4,8 +4,8 @@
   <groupId>com.bluematador</groupId>
   <artifactId>blue-matadador-client</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>blue-matadador-client</name>
+  <version>0.0.1</version>
+  <name>blue-matadador-metrics-client</name>
   <url>http://maven.apache.org</url>
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
