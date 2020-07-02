@@ -16,11 +16,11 @@ before_deploy:
 deploy:
 - skip_cleanup: true
   provider: script
-  script: "./deploy.sh"
+  script: "./.travis/deploy.sh"
   on:
     branch: master
 - skip_cleanup: true
   provider: script
-  script: "./deploy.sh"
+  script: "./.travis/deploy.sh"
   on:
     tags: true
