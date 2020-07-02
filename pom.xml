@@ -8,7 +8,29 @@
 
   <packaging>jar</packaging>
   <name>blue-matadador-metrics-client</name>
-  <url>http://maven.apache.org</url>
+  <description>blue-matadador-metrics-client allows users to send arbitrary StatsD-style metrics to their Blue Matador account</description>
+  <url>https://github.com/bluematador/bluematador-metrics-client-java</url>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://github.com/bluematador/bluematador-metrics-client-java/blob/master/LICENSE</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Hunter Davis</name>
+      <email>hunter@bluematador.com</email>
+      <url>https://github.com/hunterdavis730</url>
+    </developer>
+    <developer>
+      <name>Keilan Jackson</name>
+      <email>keilan@bluematador.com</email>
+      <url>https://github.com/krjackso</url>
+    </developer>
+  </developers>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
