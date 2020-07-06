@@ -2,6 +2,8 @@
 
 Send StatsD-style custom metrics to your Blue Matador account. Requires a [Blue Matador](https://www.bluematador.com) account with agents installed.
 
+[![Build Status](https://travis-ci.com/bluematador/bluematador-metrics-client-java.svg?branch=master)](https://travis-ci.com/bluematador/bluematador-metrics-client-java)
+
 ## Setup
 
 The Blue Matador Java Metrics Client is distributed through maven. Start by adding the following configuration to your pom.xml
@@ -10,14 +12,14 @@ The Blue Matador Java Metrics Client is distributed through maven. Start by addi
 <dependency>
     <groupId>com.bluematador.maven</groupId>
     <artifactId>blue-matadador-metrics-client</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
-For scala users using sbt:
+For sbt users:
 
 ```
-  "com.bluematador.maven" % "blue-matadador-metrics-client" % "0.0.1"
+  "com.bluematador.maven" % "blue-matadador-metrics-client" % "1.0.0"
 ```
 
 To start using the Blue Matador Metric Client, import the `BlueMatadorClient` class and the `BlueMatadorClientBuilder`
