@@ -12,14 +12,14 @@ The Blue Matador Java Metrics Client is distributed through maven. Start by addi
 <dependency>
     <groupId>com.bluematador.maven</groupId>
     <artifactId>blue-matadador-metrics-client</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
 For sbt users:
 
 ```
-  "com.bluematador.maven" % "blue-matadador-metrics-client" % "1.0.0"
+  "com.bluematador.maven" % "blue-matadador-metrics-client" % "1.0.1"
 ```
 
 To start using the Blue Matador Metric Client, import the `BlueMatadorClient` class and the `BlueMatadorClientBuilder`
