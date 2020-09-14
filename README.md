@@ -31,7 +31,7 @@ class. The `BlueMatadorClientBuilder` exposes methods that allows customization 
 
  * `.withHost(String host)` The withHost method allows you to set the connection host for the Blue Matador Client.
 
-**Note:** The builder will detect if you have set `BLUEMATADOR_AGENT_HOST` and `BLUEMATADOR_AGENT_PORT` in the config file for your agent. If these variables have been set there is no need to manually set the host or port as they will be overridden.  
+**Note:** The builder will detect if you have set `BLUEMATADOR_AGENT_HOST` and `BLUEMATADOR_AGENT_PORT` as env variables. If these variables have been set there is no need to manually set the host or port as they will be overridden.  
 
 ```
 import com.bluematador.BlueMatadorClient;
